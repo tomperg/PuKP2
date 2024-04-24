@@ -10,3 +10,4 @@ st.write("## Versuchsperson auswählen")
 current_user = st.selectbox(
     'Versuchsperson',
     options = ["Nutzer1", "Nutzer2"], key="sbVersuchsperson")
+st.write("Der Name ist: ", st.session_state.current_user)
