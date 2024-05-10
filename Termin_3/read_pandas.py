@@ -25,7 +25,6 @@ def read_my_csv():
 
 
 
-
 def make_plot(df):
 
     # Erstellte einen Line Plot, der ersten 2000 Werte mit der Zeit aus der x-Achse

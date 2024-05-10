@@ -36,8 +36,8 @@ def find_person_data_by_name(suchstring):
     else:
         return {}
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
  person_names_list = get_person_names()
  print(person_names_list)
  suchstring = "Huber, Julian"
- print(find_person_data_by_name(suchstring))
+ print(find_person_data_by_name(suchstring))'''
