@@ -9,14 +9,14 @@ import pandas as pd
 ## ggf. auch !pip install nbformat
 import plotly.express as px
 
-def read_my_csv(path="data/ekg_data"): #TODO change path to EKG data
+def read_my_csv(path): #TODO change path to EKG data
     # Einlesen eines Dataframes
     ## "\t" steht für das Trennzeichen in der txt-Datei (Tabulator anstelle von Beistrich)
     ## header = None: es gibt keine Überschriften in der txt-Datei
     df = pd.read_csv(path, sep="\t", header=None)
 
     # Setzt die Columnnames im Dataframe
-    df.columns = ["Messwerte in mV", "Zeit in ms"]
+    df.columns = ["Messwerte in Watt", "Zeit in Sekunden"]
     
     # Gibt den geladen Dataframe zurück
     return df
@@ -50,8 +50,8 @@ def compute_power_statistics(df):
 
 def make_pow_HR_plot(df):
     #Erstelle plot mit Power und HR als y-Achse und Zeit als x-Achse
-    fig = px.line(df, x= "time", y="PowerOriginal")
-    fig.add_scatter(x= "time", y="HeartRate", mode='lines', name='HeartRate')
+    fig = px.line(df, x= "time", y=["PowerOriginal", "HeartRate"])
+    # fig.add_scatter(df, x="time", y="HeartRate", mode='lines', name='HeartRate')
     fig.update_layout(title='Power and HeartRate over time')
     return fig
 
@@ -96,10 +96,10 @@ def compute_power_in_zones(df):
 
 
 
-#def make_plot(df):
-
-    # Erstellte einen Line Plot, der ersten 2000 Werte mit der Zeit aus der x-Achse
-    fig = px.line(df.head(2000), x= "Zeit in ms", y="Messwerte in mV")
+def make_plot(df):
+    #Erstelle plot mit Power und HR als y-Achse und Zeit als x-Achse
+    fig = px.line(df, x= "Zeit in Sekunden", y="Messwerte in Watt")
+    fig.update_layout(title='My Plot')
     return fig
 
 
@@ -107,11 +107,10 @@ if __name__ == '__main__':
     # Test all blocks
     df = read_activity_csv()
     print(df.head())
-    print(compute_power_statistics(df),":p_mean, p_max")
+    print("p_mean, p_max:", compute_power_statistics(df))
     hf_max, hf_mean = compute_HR_statistics(df)	
     df = add_HR_zones(df, hf_max)
-    print(compute_time_in_zones(df),":time in zones")
-    print(compute_power_in_zones(df),":power in zones")
-    
-
-    
+    print("time in zones:", compute_time_in_zones(df))
+    print("power in zones:", compute_power_in_zones(df)) 
+    fig = make_pow_HR_plot(df)
+    fig.show()

@@ -1,7 +1,7 @@
 import streamlit as st
-from read_pandas import read_my_csv
-from read_pandas import make_plot
+from read_pandas import read_my_csv, read_activity_csv, compute_HR_statistics, compute_power_statistics, make_pow_HR_plot, add_HR_zones, make_plot
 
+path = "data/ekg_data/01_Ruhe.txt"
 
 # Wo startet sie Zeitreihe
 # Wo endet sich
@@ -13,10 +13,27 @@ with tab1:
     st.header("EKG-Data")
     st.write("# My Plot")
 
-    df = read_my_csv()
-    fig = make_plot(df)
+    df_ekg = read_my_csv(path)
+    fig_ekg = make_plot(df_ekg)
 
-    st.plotly_chart(fig)
+    st.plotly_chart(fig_ekg)
 
 with tab2:
     st.header("Power-Data")
+    
+    df = read_activity_csv(path="data/activities/activity.csv")
+    hf_max, hf_mean = compute_HR_statistics(df)
+    p_mean, p_max = compute_power_statistics(df)
+    df = add_HR_zones(df, hf_max)
+
+    fig = make_pow_HR_plot(df)
+    st.plotly_chart(fig)
+
+    st.write(f"Maximale Herzfrequenz: {hf_max}")
+    st.write(f"Durchschnittliche Herzfrequenz: {hf_mean}")
+    st.write(f"Durchschnittliche Leistung: {p_mean}")
+    st.write(f"Maximale Leistung: {p_max}")
+
+  
+
+   
