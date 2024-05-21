@@ -9,7 +9,7 @@ import pandas as pd
 ## ggf. auch !pip install nbformat
 import plotly.express as px
 
-def read_my_csv(path="data/activities/activity.csv"): #TODO change path to EKG data
+def read_my_csv(path="data/ekg_data"): #TODO change path to EKG data
     # Einlesen eines Dataframes
     ## "\t" steht für das Trennzeichen in der txt-Datei (Tabulator anstelle von Beistrich)
     ## header = None: es gibt keine Überschriften in der txt-Datei
@@ -27,50 +27,76 @@ def read_activity_csv(path="data/activities/activity.csv"):
     ## header = None: es gibt keine Überschriften in der txt-Datei
     df = pd.read_csv(path)
 
-    #TODO add 'time' column
-    # df['time'] = ...
+    #TODO add 'time' column DONE
+    df['time'] = [i for i in range(len(df))]
 
     # Gibt den geladen Dataframe zurück
     return df
 
+def compute_HR_statistics(df):
+    hf_max = df['HeartRate'].max()
+    hf_mean = df['HeartRate'].mean()
+
+    return hf_max, hf_mean
 
 def compute_power_statistics(df):
     # compute mean and max
+    p_mean = df['PowerOriginal'].mean()
+    p_max = df['PowerOriginal'].max()
+
 
     return p_mean, p_max
 
 
 def make_pow_HR_plot(df):
-
-    #fig = px.line ... x='time', y=['HR', 'Pow']
-
-
+    #Erstelle plot mit Power und HR als y-Achse und Zeit als x-Achse
+    fig = px.line(df, x= "time", y="PowerOriginal")
+    fig.add_scatter(x= "time", y="HeartRate", mode='lines', name='HeartRate')
+    fig.update_layout(title='Power and HeartRate over time')
     return fig
 
 
 def add_HR_zones(df, hf_max):
-
-    df['zone_1'] = df['HeartRate'] > zone_1_min and  df['HeartRate'] < zone_2_min
+    #create 5 Zones for HR based on hf_max
+    zone_1_min = 0.5 * hf_max
+    zone_1_max = 0.6 * hf_max
+    zone_2_max = 0.7 * hf_max
+    zone_3_max = 0.8 * hf_max
+    zone_4_max = 0.9 * hf_max
+    zone_5_max = 1 * hf_max
+    df['zone_1'] = (df['HeartRate'] > zone_1_min) & (df['HeartRate'] <= zone_1_max)
+    df['zone_2'] = (df['HeartRate'] > zone_1_max) & (df['HeartRate'] <= zone_2_max)
+    df['zone_3'] = (df['HeartRate'] > zone_2_max) & (df['HeartRate'] <= zone_3_max)
+    df['zone_4'] = (df['HeartRate'] > zone_3_max) & (df['HeartRate'] <= zone_4_max)
+    df['zone_5'] = (df['HeartRate'] > zone_4_max) & (df['HeartRate'] <= zone_5_max)
 
     return df
 
 
 def compute_time_in_zones(df):
+    #compute time in each zone
+    t_1 = df['zone_1'].sum() #where zone_1 is True
+    t_2 = df['zone_2'].sum() #where zone_2 is True
+    t_3 = df['zone_3'].sum() #where zone_3 is True
+    t_4 = df['zone_4'].sum() #where zone_4 is True
+    t_5 = df['zone_5'].sum() #where zone_5 is True
 
-    t_1 = df['zone_1'].sum()
-
-    return t_1, t_2 .....
+    return [t_1, t_2, t_3, t_4, t_5]
 
 
 def compute_power_in_zones(df):
+    #compute power in each zone
+    p_1 = df['PowerOriginal'][df['zone_1']].mean() #where zone_1 is True
+    p_2 = df['PowerOriginal'][df['zone_2']].mean() #where zone_2 is True
+    p_3 = df['PowerOriginal'][df['zone_3']].mean() #where zone_3 is True
+    p_4 = df['PowerOriginal'][df['zone_4']].mean() #where zone_4 is True
+    p_5 = df['PowerOriginal'][df['zone_5']].mean() #where zone_5 is True
+
+    return [p_1, p_2, p_3, p_4, p_5]
 
 
-    p_1 = df['PowerOriginal'].mean() where zone_1
 
-    return p_1, p_2 ....
-
-
-def make_plot(df):
+#def make_plot(df):
 
     # Erstellte einen Line Plot, der ersten 2000 Werte mit der Zeit aus der x-Achse
     fig = px.line(df.head(2000), x= "Zeit in ms", y="Messwerte in mV")
@@ -81,4 +107,11 @@ if __name__ == '__main__':
     # Test all blocks
     df = read_activity_csv()
     print(df.head())
+    print(compute_power_statistics(df),":p_mean, p_max")
+    hf_max, hf_mean = compute_HR_statistics(df)	
+    df = add_HR_zones(df, hf_max)
+    print(compute_time_in_zones(df),":time in zones")
+    print(compute_power_in_zones(df),":power in zones")
+    
+
     
