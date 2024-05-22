@@ -31,10 +31,10 @@ with tab2:
     fig = make_pow_HR_plot(df)
     st.plotly_chart(fig)
 
-    st.write(f"- Maximale Herzfrequenz: {hf_max}")
-    st.write(f"- Durchschnittliche Herzfrequenz: {hf_mean}")
-    st.write(f"- Durchschnittliche Leistung: {p_mean}")
-    st.write(f"- Maximale Leistung: {p_max}")
+    st.write(f"- Maximale Herzfrequenz: {round(hf_max)}")
+    st.write(f"- Durchschnittliche Herzfrequenz: {round(hf_mean)}")
+    st.write(f"- Durchschnittliche Leistung: {round(p_mean)}")
+    st.write(f"- Maximale Leistung: {round(p_max)}")
 
   
 
