@@ -1,5 +1,5 @@
 import streamlit as st
-from read_pandas import read_my_csv, read_activity_csv, compute_HR_statistics, compute_power_statistics, make_pow_HR_plot, add_HR_zones, make_plot
+from read_pandas import read_my_csv, read_activity_csv, compute_HR_statistics, compute_power_statistics, make_pow_HR_plot, add_HR_zones, make_plot #,color_zones
 
 path = "data/ekg_data/01_Ruhe.txt"
 
@@ -27,8 +27,28 @@ with tab2:
     df = add_HR_zones(df, hf_max)
 
     #TODO Färbe die verschiedenen Zonen aus add_HR_zones ein
+
+
     
     fig = make_pow_HR_plot(df)
+
+    #einfügen von durchgezogenen waagrechen Linien bei verschiednen Werten von hf_max
+    fig.add_hline(y=0.5*hf_max, line_dash="dash", line_color="blue")
+    fig.add_hline(y=0.6*hf_max, line_dash="dash", line_color="red")
+    fig.add_hline(y=0.7*hf_max, line_dash="dash", line_color="orange")
+    fig.add_hline(y=0.8*hf_max, line_dash="dash", line_color="yellow")
+    fig.add_hline(y=0.9*hf_max, line_dash="dash", line_color="green")
+
+    #benennen von add_hlines
+    fig.add_annotation(x=0, y=0.5*hf_max, text="Zone 1", showarrow=False)
+    fig.add_annotation(x=0, y=0.6*hf_max, text="Zone 2", showarrow=False)
+    fig.add_annotation(x=0, y=0.7*hf_max, text="Zone 3", showarrow=False)
+    fig.add_annotation(x=0, y=0.8*hf_max, text="Zone 4", showarrow=False)
+    fig.add_annotation(x=0, y=0.9*hf_max, text="Zone 5", showarrow=False)
+    
+
+    fig.update_layout(title="Power and Heart Rate", xaxis_title="Time", yaxis_title="Power/Heart Rate")
+    #fig.update_layout(color_zones(df))
     st.plotly_chart(fig)
 
     st.write(f"- Maximale Herzfrequenz: {round(hf_max)}")

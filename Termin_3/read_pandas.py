@@ -102,6 +102,21 @@ def make_plot(df):
     fig.update_layout(title='My Plot')
     return fig
 
+'''def color_zones(df):
+    #TODO color zones in plot
+    if 'zone_1' == True:
+        plot_bgcolor = 'green'
+    elif 'zone_2' == True:
+        plot_bgcolor = 'yellow'
+    elif 'zone_3' == True:
+        plot_bgcolor = 'orange'
+    elif 'zone_4' == True:
+        plot_bgcolor = 'red'
+    elif 'zone_5' == True:
+        plot_bgcolor = 'purple'
+    else:
+        pass'''
+
 
 if __name__ == '__main__':
     # Test all blocks
