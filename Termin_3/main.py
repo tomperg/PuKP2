@@ -26,27 +26,15 @@ with tab2:
     p_mean, p_max = compute_power_statistics(df)
     df = add_HR_zones(df, hf_max)
 
-    #Färbe die verschiedenen Zonen aus add_HR_zones ein
+    #TODO Färbe die verschiedenen Zonen aus add_HR_zones ein
     
-    '''zone_colors = {
-        'zone_1': 'lightblue',
-        'zone_2': 'blue',
-        'zone_3': 'green',
-        'zone_4': 'orange',
-        'zone_5': 'red'
-    }
-    for zone, color in zone_colors.items():
-        zone_df = df[df[zone]]
-        fig.add_scatter(x=zone_df['time'], y=zone_df['HeartRate'], mode='lines', name=zone, line=dict(color=color))'''
-
-
     fig = make_pow_HR_plot(df)
     st.plotly_chart(fig)
 
-    st.write(f"Maximale Herzfrequenz: {hf_max}")
-    st.write(f"Durchschnittliche Herzfrequenz: {hf_mean}")
-    st.write(f"Durchschnittliche Leistung: {p_mean}")
-    st.write(f"Maximale Leistung: {p_max}")
+    st.write(f"- Maximale Herzfrequenz: {hf_max}")
+    st.write(f"- Durchschnittliche Herzfrequenz: {hf_mean}")
+    st.write(f"- Durchschnittliche Leistung: {p_mean}")
+    st.write(f"- Maximale Leistung: {p_max}")
 
   
 
