@@ -32,7 +32,8 @@ with tab2:
     
     fig = make_pow_HR_plot(df)
 
-    #einfügen von durchgezogenen waagrechen Linien bei verschiednen Werten von hf_max
+    #einfügen von durchgezogenen waagrechen Linien bei verschiednen Zonen-Werten von hf_max
+
     fig.add_hline(y=0.5*hf_max, line_dash="dash", line_color="blue")
     fig.add_hline(y=0.6*hf_max, line_dash="dash", line_color="red")
     fig.add_hline(y=0.7*hf_max, line_dash="dash", line_color="orange")
