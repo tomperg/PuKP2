@@ -1,7 +1,7 @@
 import streamlit as st
 from read_pandas import read_my_csv, read_activity_csv, compute_HR_statistics, compute_power_statistics, make_pow_HR_plot, add_HR_zones, make_plot #,color_zones
 
-path = "data/ekg_data/01_Ruhe.txt"
+
 
 # Wo startet sie Zeitreihe
 # Wo endet sich
@@ -13,7 +13,7 @@ with tab1:
     st.header("EKG-Data")
     st.write("# My Plot")
 
-    df_ekg = read_my_csv(path)
+    df_ekg = read_my_csv()
     fig_ekg = make_plot(df_ekg)
 
     st.plotly_chart(fig_ekg)
