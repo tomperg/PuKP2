@@ -9,17 +9,23 @@ import pandas as pd
 ## ggf. auch !pip install nbformat
 import plotly.express as px
 
-def read_my_csv(path): #TODO change path to EKG data
+def read_my_csv(): #TODO change path to EKG data
     # Einlesen eines Dataframes
     ## "\t" steht für das Trennzeichen in der txt-Datei (Tabulator anstelle von Beistrich)
     ## header = None: es gibt keine Überschriften in der txt-Datei
-    df = pd.read_csv(path, sep="\t", header=None)
+    df = pd.read_csv("data/ekg_data/01_Ruhe.txt", sep="\t", header=None)
 
     # Setzt die Columnnames im Dataframe
     df.columns = ["Messwerte in Watt", "Zeit in Sekunden"]
     
     # Gibt den geladen Dataframe zurück
     return df
+
+def make_plot(df):
+    #Erstelle plot mit Power und HR als y-Achse und Zeit als x-Achse
+    fig = px.line(df.head(2000), x= "Zeit in Sekunden", y="Messwerte in Watt")
+    
+    return fig
 
 def read_activity_csv(path="data/activities/activity.csv"):
     # Einlesen eines Dataframes
@@ -96,11 +102,7 @@ def compute_power_in_zones(df):
 
 
 
-def make_plot(df):
-    #Erstelle plot mit Power und HR als y-Achse und Zeit als x-Achse
-    fig = px.line(df, x= "Zeit in Sekunden", y="Messwerte in Watt")
-    fig.update_layout(title='My Plot')
-    return fig
+
 
 '''def color_zones(df):
     #TODO color zones in plot
