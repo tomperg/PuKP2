@@ -107,7 +107,7 @@ def compute_power_in_zones(df):
 '''def color_zones(df):
     #TODO color zones in plot
     if 'zone_1' == True:
-        plot_bgcolor = 'green'
+        plot_bgcolor = 'green'          --> bereits in main.py überholt
     elif 'zone_2' == True:
         plot_bgcolor = 'yellow'
     elif 'zone_3' == True:
