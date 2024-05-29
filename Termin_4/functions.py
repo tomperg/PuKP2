@@ -32,6 +32,14 @@ def our_power_curve(df, fs = 1):
     df_powercurve = pd.DataFrame({"Powercurve": powercurve, "Intervall": intervall/60})
     return df_powercurve
 
+
+def plot_power_curve(df):
+        #plotten
+    time_intervals = [1, 5, 10, 30, 60, 300, 600, 1800, 3600]
+    fig = px.line(our_power_curve(df, 1), x= "Intervall", y="Powercurve", log_x=True, title='Logarithmische Skala auf der X-Achse')
+    layout = fig.update_layout(title="Powercurve", xaxis_title="Intervall in Minuten", yaxis_title="Power in Watt")
+
+
 if __name__ == "__main__":
     df = read_activity_csv()
     #print(find_best_effort(df, 30))
@@ -39,10 +47,6 @@ if __name__ == "__main__":
     print(our_power_curve(df, 2))
 
 
-    #plotten
-    time_intervals = [1, 5, 10, 30, 60, 300, 600, 1800, 3600]
-    fig = px.line(our_power_curve(df, 1), x= "Intervall", y="Powercurve", log_x=True, title='Logarithmische Skala auf der X-Achse')
-    layout = fig.update_layout(title="Powercurve", xaxis_title="Intervall in Minuten", yaxis_title="Power in Watt")
    
 
-    fig.show()
+    
