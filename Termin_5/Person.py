@@ -63,7 +63,7 @@ class Person:
         age_used = Person.calc_age(self)
         max_heart_rate = 220 - age_used
         return max_heart_rate
-        
+#Funktion um die Daten einer Person anhand der ID zu laden
     def load_by_id(person_id):
         person_data = Person.load_person_data()
         for eintrag in person_data:

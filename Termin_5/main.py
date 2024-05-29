@@ -1,6 +1,7 @@
 import streamlit as st
 import read_person_data
 import ekgdata
+import datetime as dt
 import matplotlib.pyplot as plt
 
 #%% Zu Beginn
@@ -15,10 +16,11 @@ if 'aktuelle_versuchsperson' not in st.session_state:
 
 ## Anlegen des Session State. Bild, wenn es kein Bild gibt
 if 'picture_path' not in st.session_state:
-    st.session_state.picture_path = 'data/pictures/none.jpg'
+    st.session_state.picture_path = 'pictures/none.jpg'
 
 ## TODO: Session State für Pfad zu EKG Daten 
-
+if 'ekg_data_path' not in st.session_state:
+    st.session_state.ekg_data_path = 'ekg_data/01_Ruhe_short.txt'
 #%% Design des Dashboards
 
 # Schreibe die Überschrift
@@ -34,7 +36,7 @@ st.session_state.aktuelle_versuchsperson = st.selectbox(
 st.write("Der Name ist: ", st.session_state.aktuelle_versuchsperson) 
 
 # TODO: Weitere Daten wie Geburtsdatum etc. schön anzeigen
-
+st.write("Geburtsdatum: ", read_person_data.find_person_data_by_name(st.session_state.aktuelle_versuchsperson)["date_of_birth"])
 # Nachdem eine Versuchsperson ausgewählt wurde, die auch in der Datenbank ist
 # Finde den Pfad zur Bilddatei
 if st.session_state.aktuelle_versuchsperson in person_names:
