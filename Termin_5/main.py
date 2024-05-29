@@ -52,7 +52,7 @@ st.image(image, caption=st.session_state.aktuelle_versuchsperson)
 #% Öffne EKG-Daten
 # TODO: Für eine Person gibt es ggf. mehrere EKG-Daten. Diese müssen über den Pfad ausgewählt werden können
 # Vergleiche Bild und Person
-current_egk_data = ekgdata.EKGdata(r"data\ekg_data\01_Ruhe_short.txt")
+current_egk_data = ekgdata.EKGdata(r"ekg_data\01_Ruhe_short.txt")
 
 #%% EKG-Daten als Matplotlib Plot anzeigen
 # Nachdem die EKG, Daten geladen wurden
