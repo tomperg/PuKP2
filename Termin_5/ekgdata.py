@@ -98,29 +98,13 @@ class EKGdata:
 
         self.df_peaks = pd.DataFrame(peaks, columns=["Indizes"])
         return peaks
-
-    
-# Funktion zur Berechnung der Hr anhand der peaks und der Zeit
+#Funktion um die Herzfrequenz zu schätzen anhand der Peaks und der Zeit zwischen den Peaks
     def estimate_heartrate(self):
         peaks = self.find_peaks()
-        
-        # calculate the time between the peaks
-        time_between_peaks_in_ms = np.arange(0, len(peaks)-1, 1, dtype='int64')
-        for i in range(len(peaks)-1):
-            time_between_peaks_in_ms[i] = (self.df['Zeit in ms'][peaks[i+1]] - self.df['Zeit in ms'][peaks[i]])
-            
-        # convert the time between the peaks to minutes
-        time_between_peaks_in_ms = np.array(time_between_peaks_in_ms)
-        time_between_peaks = (time_between_peaks_in_ms / 1000) / 60
-        
-        # calculate the heart rate
-        heart_rate = 1 / time_between_peaks
-
-        # plot the heart rate (optional)
-        time_ms = self.df['Zeit in ms'][peaks[1:]]
-        time_m = time_ms / 1000 / 60
-
-        return heart_rate
+        time_between_peaks = np.diff(peaks)
+        heart_rate = sum(1 / time_between_peaks)
+        return heart_rate, time_between_peaks
+   
     
 #Plot der EKG-Daten mit gefundenen Peaks
     def plot_time_series(self):
@@ -158,4 +142,5 @@ if __name__ == "__main__":
     print(ekg.df.head())
     ekg.make_plot()
     print(ekg.find_peaks())
-    print(ekg.estimate_heartrate())
+    
+    print("Hr: ", ekg.estimate_heartrate())
