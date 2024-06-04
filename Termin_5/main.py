@@ -5,7 +5,7 @@ import datetime as dt
 import matplotlib.pyplot as plt
 
 #%% Zu Beginn
-
+#
 # Lade alle Personen
 person_names = read_person_data.get_person_list(read_person_data.load_person_data())
 
