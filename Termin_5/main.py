@@ -5,7 +5,10 @@ import datetime as dt
 import matplotlib.pyplot as plt
 
 #%% Zu Beginn
-#
+#Lass den nutzer eine Versuchsperson auswählen und speicher diese als aktuelle Versuchsperson
+# Lade die Daten der Versuchsperson
+
+
 # Lade alle Personen
 person_names = read_person_data.get_person_list(read_person_data.load_person_data())
 
@@ -16,11 +19,11 @@ if 'aktuelle_versuchsperson' not in st.session_state:
 
 ## Anlegen des Session State. Bild, wenn es kein Bild gibt
 if 'picture_path' not in st.session_state:
-    st.session_state.picture_path = 'pictures/none.jpg'
+    st.session_state.picture_path = 'data/pictures/none.jpg'
 
 ## TODO: Session State für Pfad zu EKG Daten 
 if 'ekg_data_path' not in st.session_state:
-    st.session_state.ekg_data_path = 'ekg_data/01_Ruhe_short.txt'
+    st.session_state.ekg_data_path = 'data/ekg_data/01_Ruhe_short.txt'
 #%% Design des Dashboards
 
 # Schreibe die Überschrift
@@ -52,7 +55,7 @@ st.image(image, caption=st.session_state.aktuelle_versuchsperson)
 #% Öffne EKG-Daten
 # TODO: Für eine Person gibt es ggf. mehrere EKG-Daten. Diese müssen über den Pfad ausgewählt werden können
 # Vergleiche Bild und Person
-current_egk_data = ekgdata.EKGdata(r"ekg_data\01_Ruhe_short.txt")
+current_egk_data = ekgdata.EKGdata(r"data\ekg_data\01_Ruhe_short.txt")
 
 #%% EKG-Daten als Matplotlib Plot anzeigen
 # Nachdem die EKG, Daten geladen wurden
