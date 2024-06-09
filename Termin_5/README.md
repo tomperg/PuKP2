@@ -23,7 +23,7 @@ Dieses Repository enthält eine Klasse `EKGData`, die verwendet wird, um die Her
 
 ## Nutzung
 öffnen sie ein neues Terminal in der main.py datei und geben sie folgenden Befehl ein:
-    ```sh
+```sh
    streamlit run main.py
-    ```
+ ```
 Daraufhin sollte sich die Website öffnen!
