@@ -1,5 +1,6 @@
 import json
-import datetime as dt
+from datetime import datetime
+
 class Person:
     
     @staticmethod
@@ -20,23 +21,34 @@ class Person:
     
     @staticmethod
     def find_person_data_by_name(suchstring):
-        """ Eine Funktion der Nachname, Vorname als ein String übergeben wird
-        und die die Person als Dictionary zurück gibt"""
-
+        """A function where last name, first name is passed as a string and returns the person as a dictionary."""
+        if not isinstance(suchstring, str):
+            raise TypeError("The argument must be a string")
+        
         person_data = Person.load_person_data()
-        #print(suchstring)
         if suchstring == "None":
             return {}
 
-        two_names = suchstring.split(", ")
-        vorname = two_names[1]
-        nachname = two_names[0]
+        try:
+            nachname, vorname = suchstring.split(", ")
+        except ValueError:
+            raise ValueError("The name string should be in the format 'Lastname, Firstname'")
+
+        for entry in person_data:
+            if entry["lastname"] == nachname and entry["firstname"] == vorname:
+                return entry
+        return {}
+        
+    @staticmethod
+    def load_by_id(ID):
+        '''A function that loads a person by id and returns the person as a dictionary.'''
+        person_data = Person.load_person_data()
+
+        if ID == "None":
+            return None
 
         for eintrag in person_data:
-            print(eintrag)
-            if (eintrag["lastname"] == nachname and eintrag["firstname"] == vorname):
-                print()
-
+            if eintrag["id"] == ID:
                 return eintrag
         else:
             return {}
@@ -48,39 +60,29 @@ class Person:
         self.picture_path = person_dict["picture_path"]
         self.id = person_dict["id"]
 
-#Erstelle eine Funktion um das Alter der Personen aus dem JSON zu berechnen
     def calc_age(self):
-        data_used_for_age_calc = Person.find_person_data_by_name(self)
-        birthdate = data_used_for_age_calc["date_of_birth"]
-        year = dt.date.today().year
-        """A Function to calculate the age of a person"""
-        age = year - birthdate
-        return age
-    
+        '''A function that calculates the age of a person based on the date of birth.'''
 
-    #Funktion um max_HR basierend auf Alter zu berechnen
+        today = datetime.today()
+        age = today.year - self.date_of_birth
+        
+        return age
+
+
     def calc_max_heart_rate(self):
-        age_used = Person.calc_age(self)
-        max_heart_rate = 220 - age_used
+        '''A function that calculates the maximum heart rate of a person.'''
+
+        age = self.calc_age()
+        max_heart_rate = 220 - age
+
         return max_heart_rate
-#Funktion um die Daten einer Person anhand der ID zu laden
-    def load_by_id(person_id):
-        person_data = Person.load_person_data()
-        for eintrag in person_data:
-            if eintrag["id"] == person_id:
-                return eintrag
-        else:
-            return {}
-        
-        
-        
+
 
 if __name__ == "__main__":
     print("This is a module with some functions to read the person data")
     persons = Person.load_person_data()
     person_names = Person.get_person_list(persons)
-    print(person_names)
-    print(Person.find_person_data_by_name("Huber, Julian"))
-    print(Person.calc_age("Huber, Julian"))
-    print(Person.calc_max_heart_rate("Heyer, Yannic"))
-    print(Person.load_by_id(3))
+    person1 = Person(Person.find_person_data_by_name("Huber, Julian"))
+    print(person1.calc_max_heart_rate())
+    print(Person.load_by_id(1))
+    

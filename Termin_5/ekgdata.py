@@ -1,50 +1,14 @@
 import json
 import pandas as pd
-import plotly.express as px
-import matplotlib.pyplot as plt
-import scipy
-from scipy import signal
-import numpy as np
 import scipy.signal as signal
-from scipy.signal import find_peaks
+import plotly.express as px
 import plotly.graph_objects as go
-
-
-
-# %% Objekt-Welt
+import numpy as np
 
 # Klasse EKG-Data für Peakfinder, die uns ermöglicht peaks zu finden
-
 class EKGdata:
 
-## Konstruktor der Klasse soll die Daten einlesen
-
-    def __init__(self, ekg_dict):
-        #pass
-        #self.id = ekg_dict["id"]
-        #self.date = ekg_dict["date"]
-        #self.data = ekg_dict["result_link"]
-        if isinstance(ekg_dict, dict):
-            self.id = ekg_dict["id"]
-            self.date = ekg_dict["date"]
-            self.data = ekg_dict["result_link"]
-        elif isinstance(ekg_dict, str):
-            self.data = ekg_dict
-            self.id = None
-            self.date = None
-        else:
-            raise ValueError("Input should be a dictionary or a file path string.")
-        
-        self.df = pd.read_csv(self.data, sep='\t', header=None, names=['Messwerte in mV','Zeit in ms',])
-        self.df_ekg = pd.read_csv(self.data, sep='\t', header=None, names=['Amplitude in [mV]','Time in ms',])
-
-
-    def make_plot(self):
-
-        # Erstellte einen Line Plot, der ersten 2000 Werte mit der Zeit aus der x-Achse
-        self.fig = px.line(self.df.head(2000), x="Zeit in ms", y="Messwerte in mV")
-        return self.fig
-#Instanziiert einen EKG-Test anhand der ID und der Datenbank
+    @staticmethod
     def load_by_id(PersonID, EKGID = "None"):
         '''A function that loads the EKG Data by id and returns the Data as a dictionary.'''
 
@@ -70,43 +34,49 @@ class EKGdata:
                         return ekg_test
         else:
             return {}
+
+    def __init__(self, ekg_dict):
+        self.id = ekg_dict["id"]
+        self.date = ekg_dict["date"]
+        self.data = ekg_dict["result_link"]
+        self.df = pd.read_csv(self.data, sep='\t', header=None, names=['EKG in mV','Time in ms',])
+
+    def find_peaks(self):
+        '''A function that finds the peaks in the EKG data and returns the peaks as an array.'''
         
-#Funktion um die Peaks zu finden
-    def find_peaks(self):        
-        # erstelle eine liste mit den Daten
-        np_array = self.df_ekg["Amplitude in [mV]"].values
-
-        # Liste peaks, die den index der peaks speichern
-        peaks = []
-
-        # erstellt einen laufindex vom 1. bis zum
-        # vor-letzten element der liste
-        for index in range(1,len(np_array)-1):
-            #print("index ist:", index)
-            #print("wert ist:", np_array[index])
-            vorgaenger = np_array[index-1]
-            nachfolger = np_array[index+1]
-            kandidat = np_array[index]
-
-            #  vergleiche die drei Werte
-            # wenn Kadidat höher als beide anderen
-
-            if kandidat > nachfolger and kandidat >vorgaenger:
-                # dann füge es einer liste hinzu
-                peaks.append(index)
-        # Erstelle Dataframe
-
-        self.df_peaks = pd.DataFrame(peaks, columns=["Indizes"])
+        peaks, _ = signal.find_peaks(self.df['EKG in mV'], height=340) 
         return peaks
-#Funktion um die Herzfrequenz zu schätzen anhand der Peaks und der Zeit zwischen den Peaks
+        
+
     def estimate_heartrate(self):
+        
         peaks = self.find_peaks()
-        time_between_peaks = np.diff(peaks)
-        heart_rate = sum(1 / time_between_peaks)
-        return heart_rate, time_between_peaks
-   
-    
-#Plot der EKG-Daten mit gefundenen Peaks
+        
+        if len(peaks) < 2:
+            raise ValueError("Not enough peaks to estimate heart rate")
+        
+        # Calculate the time between the peaks
+        time_between_peaks_in_ms = np.zeros(len(peaks) - 1, dtype='int64')
+        for i in range(len(peaks) - 1):
+            time_between_peaks_in_ms[i] = (self.df['Time in ms'][peaks[i + 1]] - self.df['Time in ms'][peaks[i]])
+            
+        # Convert the time between the peaks to minutes
+        time_between_peaks = time_between_peaks_in_ms / 1000 / 60
+        
+        # Calculate the heart rate
+        heart_rate = 1 / time_between_peaks
+
+        # Plot the heart rate (optional)
+        time_ms = self.df['Time in ms'][peaks[1:]]
+        time_m = time_ms / 1000 / 60
+        fig = px.line(x=time_m, y=heart_rate, title='Heart Rate', labels={'x': 'Time in ms', 'y': 'Heart Rate in bpm'})
+        
+        # Mean heart rate
+        mean_heart_rate = np.mean(heart_rate)
+
+        return heart_rate, fig, mean_heart_rate
+
+
     def plot_time_series(self):
         '''A function that plots the EKG data as a time series.'''
 
@@ -114,19 +84,20 @@ class EKGdata:
         fig = go.Figure()
         
         # add the EKG data
-        mV = self.df['Messwerte in mV']
-        time = self.df['Zeit in ms'] / 1000 / 60
+        mV = self.df['EKG in mV']
+        time = self.df['Time in ms'] / 1000 / 60
         fig.add_trace(go.Scatter(
             x=time,
             y=mV,
             mode='lines',
             name='EKG Data'
         ))
+
         
         # add the layout
         fig.update_layout(
             title='EKG Data',
-            xaxis_title='Time in m',
+            xaxis_title='Time in min',
             yaxis_title='EKG in mV'
         )
         return fig
@@ -134,13 +105,8 @@ class EKGdata:
 
 if __name__ == "__main__":
     print("This is a module with some functions to read the EKG data")
-    file = open("person_db.json")
-    person_data = json.load(file)
-    ekg_dict = person_data[0]["ekg_tests"][0]
-    print(ekg_dict)
-    ekg = EKGdata(ekg_dict)
-    print(ekg.df.head())
-    ekg.make_plot()
-    print(ekg.find_peaks())
     
-    print("Hr: ", ekg.estimate_heartrate())
+    ekg_dict = EKGdata.load_by_id(1)
+    print(ekg_dict)
+    
+    
