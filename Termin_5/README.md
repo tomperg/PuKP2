@@ -6,8 +6,8 @@ Dieses Repository enthält eine Klasse `EKGData`, die verwendet wird, um die Her
 
 1. Klone das Repository:
     ```sh
-    git clone <URL-zu-deinem-Repository>
-    cd <Repository-Name>
+    git clone <https://github.com/tomperg/PuKP2.git>
+    cd <PuKP2>
     ```
 
 2. Erstelle eine virtuelle Umgebung und aktiviere sie:
